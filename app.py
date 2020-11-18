@@ -1,5 +1,10 @@
-from flask import Flask
+from flask import Flask, request
 from flask_mail import Mail, Message
+# from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 import smtplib
 import os
 
@@ -17,31 +22,46 @@ app = Flask(__name__)
 def index():
   return 'Hello, Fauxxi Beauty API!'
 
+# Contact form to send email to user
 @app.route('/contact', methods=['POST'])
 def form():
+    payload = request.get_json()
+    name = payload['name']
+    email = payload['email']
+    phone = payload['phone']
+    subject = payload['subject']
+    message = payload['message']
 
-    # app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    # app.config['MAIL_PORT'] =  587
-    # app.config['MAIL_TLS'] =  True
-    # app.config['MAIL_USERNAME'] = os.getenv('EMAIL')
-    # app.config['MAIL_PASSWORD'] = os.getenv('PASSWORD')
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = email
+    msg['To'] = 'tmarcelojr@gmail.com'
+    body = """\
+    <html>
+      <head></head>
+      <body>
+        <h4>From: """+str(email)+""" </h4>
+        <h4>Name: """+str(name)+""" </h4>
+        <h4>Phone: """+str(phone)+""" </h4>
+        <h4>Message:</h4>
+        <blockquote>"""+str(message)+"""</blockquote>
+      </body>
+    </html>
+    """
 
-    # mail = Mail(app)
+    msg.attach(MIMEText(body, 'html'))
+    text = msg.as_string()
 
+    # Using TLS is not secure. Gmail account requires 2-step verification to be disabled
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
+
+    # Email and password saved in local environment
     server.login(os.environ.get('EMAIL'), os.environ.get('PASSWORD'))
-    server.sendmail('example@gmail.com', 'tmarcelojr@gmail.com', 'how are you')
+
+    # Sendign email
+    server.sendmail(email, 'fauxxilashes@gmail.com', text)
     server.quit()
-    # server.close()
-    # print('Email sent!')
-    # msg = "whaaattttt"
-    # smtplib.SMTP().starttls()
-    # mail = Mail(app)
-    # message = Message('Whatever 1', sender='tmarcelojr@gmail.com', recipients=['tmarcelojr@gmail.com'])
-    # message.body = msg
-    # mail.send(message)
-  
     return 'Message sent!'
 
 # ========= Connection to server ==========
