@@ -16,7 +16,7 @@ PORT = 8000
 # Constructor - route() function - param for URL binding
 app = Flask(__name__)
 # CORS
-CORS(app, origins-['http://localhost:3000'])
+CORS(app)
 
 # ========== ROUTES ==========
 
@@ -28,7 +28,9 @@ def index():
 # Contact form to send email to user
 @app.route('/contact', methods=['POST'])
 def form():
+    print('did we get called')
     payload = request.get_json()
+    print(payload)
     name = payload['name']
     email = payload['email']
     phone = payload['phone']
@@ -63,7 +65,7 @@ def form():
     server.login(os.environ.get('EMAIL'), os.environ.get('PASSWORD'))
 
     # Sendign email
-    server.sendmail(email, 'fauxxilashes@gmail.com', text)
+    server.sendmail(email, 'tmarcelojr@gmail.com', text)
     server.quit()
     return 'Message sent!'
 
