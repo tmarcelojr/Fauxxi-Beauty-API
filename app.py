@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_mail import Mail, Message
+from flask_cors import CORS
 # from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -14,6 +15,8 @@ DEBUG = True
 PORT = 8000
 # Constructor - route() function - param for URL binding
 app = Flask(__name__)
+# CORS
+CORS(app, origins-['http://localhost:3000'])
 
 # ========== ROUTES ==========
 
