@@ -65,7 +65,7 @@ def form():
     server.login(os.environ.get('EMAIL'), os.environ.get('PASSWORD'))
 
     # Sendign email
-    server.sendmail(email, 'tmarcelojr@gmail.com', text)
+    server.sendmail(email, 'fauxxilashes@gmail.com', text)
     server.quit()
     return 'Message sent!'
 
